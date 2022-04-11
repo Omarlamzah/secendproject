@@ -1,0 +1,141 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Schema Namespace="gestionabsenceModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+  <EntityType Name="absence">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="ppr" Type="varchar" MaxLength="50" />
+    <Property Name="dateabsence" Type="date" />
+  </EntityType>
+  <EntityType Name="Decision">
+    <Key>
+      <PropertyRef Name="numrestifsar" />
+    </Key>
+    <Property Name="numrestifsar" Type="int" Nullable="false" />
+    <Property Name="datestifdsar" Type="date" />
+    <Property Name="service" Type="nchar" MaxLength="100" />
+    <Property Name="jourdeduirr" Type="int" />
+    <Property Name="datededure" Type="date" />
+    <Property Name="iddes" Type="int" />
+    <Property Name="typedecision" Type="nchar" MaxLength="100" />
+    <Property Name="numdesisionktita3" Type="int" />
+  </EntityType>
+  <EntityType Name="detaille_abs">
+    <Key>
+      <PropertyRef Name="iddetaile" />
+    </Key>
+    <Property Name="iddetaile" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="irsalistifsar" Type="nchar" MaxLength="100" />
+    <Property Name="dateirsalistifsar" Type="date" />
+    <Property Name="reponsestifsar" Type="nchar" MaxLength="100" />
+    <Property Name="wosolistifsar" Type="nchar" MaxLength="100" />
+    <Property Name="datereponsestifsar" Type="date" />
+    <Property Name="typedereponse" Type="nchar" MaxLength="100" />
+    <Property Name="idabs" Type="int" />
+  </EntityType>
+  <EntityType Name="fonction">
+    <Key>
+      <PropertyRef Name="ppr" />
+    </Key>
+    <Property Name="ppr" Type="varchar" MaxLength="50" Nullable="false" />
+    <Property Name="nom" Type="nchar" MaxLength="30" />
+    <Property Name="prenom" Type="nchar" MaxLength="30" />
+    <Property Name="ehelle" Type="nchar" MaxLength="30" />
+    <Property Name="echlant" Type="nchar" MaxLength="10" />
+    <Property Name="service" Type="nchar" MaxLength="30" />
+  </EntityType>
+  <EntityType Name="sysdiagrams">
+    <Key>
+      <PropertyRef Name="diagram_id" />
+    </Key>
+    <Property Name="name" Type="nvarchar" MaxLength="128" Nullable="false" />
+    <Property Name="principal_id" Type="int" Nullable="false" />
+    <Property Name="diagram_id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="version" Type="int" />
+    <Property Name="definition" Type="varbinary(max)" />
+  </EntityType>
+  <EntityType Name="useres">
+    <Key>
+      <PropertyRef Name="password" />
+    </Key>
+    <Property Name="username" Type="varchar" MaxLength="50" />
+    <Property Name="password" Type="int" Nullable="false" />
+    <Property Name="adminn" Type="bit" />
+  </EntityType>
+  <Association Name="FK_absence_fonction">
+    <End Role="fonction" Type="Self.fonction" Multiplicity="0..1" />
+    <End Role="absence" Type="Self.absence" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="fonction">
+        <PropertyRef Name="ppr" />
+      </Principal>
+      <Dependent Role="absence">
+        <PropertyRef Name="ppr" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_decision_absence">
+    <End Role="absence" Type="Self.absence" Multiplicity="0..1" />
+    <End Role="Decision" Type="Self.Decision" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="absence">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="Decision">
+        <PropertyRef Name="iddes" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_detaille_abs_absence">
+    <End Role="absence" Type="Self.absence" Multiplicity="0..1" />
+    <End Role="detaille_abs" Type="Self.detaille_abs" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="absence">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="detaille_abs">
+        <PropertyRef Name="idabs" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Function Name="ifuserisADMIN" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="u" Type="varchar" Mode="In" />
+    <Parameter Name="p" Type="int" Mode="In" />
+    <Parameter Name="existc" Type="int" Mode="InOut" />
+  </Function>
+  <Function Name="testuser" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="u" Type="varchar" Mode="In" />
+    <Parameter Name="p" Type="int" Mode="In" />
+    <Parameter Name="existc" Type="int" Mode="InOut" />
+  </Function>
+  <Function Name="virifieppr" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="ppr" Type="varchar" Mode="In" />
+    <Parameter Name="nab" Type="int" Mode="InOut" />
+  </Function>
+  <Function Name="virifiePROC" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="ppr" Type="varchar" Mode="In" />
+    <Parameter Name="dateabse" Type="date" Mode="In" />
+    <Parameter Name="nab" Type="int" Mode="InOut" />
+  </Function>
+  <EntityContainer Name="gestionabsenceModelStoreContainer">
+    <EntitySet Name="absence" EntityType="Self.absence" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="Decision" EntityType="Self.Decision" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="detaille_abs" EntityType="Self.detaille_abs" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="fonction" EntityType="Self.fonction" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="sysdiagrams" EntityType="Self.sysdiagrams" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="useres" EntityType="Self.useres" Schema="dbo" store:Type="Tables" />
+    <AssociationSet Name="FK_absence_fonction" Association="Self.FK_absence_fonction">
+      <End Role="fonction" EntitySet="fonction" />
+      <End Role="absence" EntitySet="absence" />
+    </AssociationSet>
+    <AssociationSet Name="FK_decision_absence" Association="Self.FK_decision_absence">
+      <End Role="absence" EntitySet="absence" />
+      <End Role="Decision" EntitySet="Decision" />
+    </AssociationSet>
+    <AssociationSet Name="FK_detaille_abs_absence" Association="Self.FK_detaille_abs_absence">
+      <End Role="absence" EntitySet="absence" />
+      <End Role="detaille_abs" EntitySet="detaille_abs" />
+    </AssociationSet>
+  </EntityContainer>
+</Schema>

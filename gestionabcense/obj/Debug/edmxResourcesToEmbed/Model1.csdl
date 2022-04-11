@@ -1,0 +1,147 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Schema Namespace="gestionabsenceModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+  <EntityType Name="fonction">
+    <Key>
+      <PropertyRef Name="ppr" />
+    </Key>
+    <Property Name="ppr" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+    <Property Name="nom" Type="String" MaxLength="30" FixedLength="true" Unicode="true" />
+    <Property Name="prenom" Type="String" MaxLength="30" FixedLength="true" Unicode="true" />
+    <Property Name="ehelle" Type="String" MaxLength="30" FixedLength="true" Unicode="true" />
+    <Property Name="echlant" Type="String" MaxLength="10" FixedLength="true" Unicode="true" />
+    <Property Name="service" Type="String" MaxLength="30" FixedLength="true" Unicode="true" />
+    <NavigationProperty Name="absences" Relationship="gestionabsenceModel.FK_absence_fonction" FromRole="fonction" ToRole="absence" />
+  </EntityType>
+  <EntityType Name="sysdiagram">
+    <Key>
+      <PropertyRef Name="diagram_id" />
+    </Key>
+    <Property Name="name" Type="String" MaxLength="128" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="principal_id" Type="Int32" Nullable="false" />
+    <Property Name="diagram_id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="version" Type="Int32" />
+    <Property Name="definition" Type="Binary" MaxLength="Max" FixedLength="false" />
+  </EntityType>
+  <EntityContainer Name="gestionabsenceEntities" annotation:LazyLoadingEnabled="true">
+    <EntitySet Name="fonctions" EntityType="Self.fonction" />
+    <EntitySet Name="sysdiagrams" EntityType="Self.sysdiagram" />
+    <FunctionImport Name="virifiePROC">
+      <Parameter Name="ppr" Mode="In" Type="String" />
+      <Parameter Name="dateabse" Mode="In" Type="DateTime" />
+      <Parameter Name="nab" Mode="InOut" Type="Int32" />
+    </FunctionImport>
+    <FunctionImport Name="virifieppr">
+      <Parameter Name="ppr" Mode="In" Type="String" />
+      <Parameter Name="nab" Mode="InOut" Type="Int32" />
+    </FunctionImport>
+    <FunctionImport Name="testuser">
+      <Parameter Name="u" Mode="In" Type="String" />
+      <Parameter Name="p" Mode="In" Type="Int32" />
+      <Parameter Name="existc" Mode="InOut" Type="Int32" />
+    </FunctionImport>
+    <FunctionImport Name="ifuserisADMIN">
+      <Parameter Name="u" Mode="In" Type="String" />
+      <Parameter Name="p" Mode="In" Type="Int32" />
+      <Parameter Name="existc" Mode="InOut" Type="Int32" />
+    </FunctionImport>
+    <EntitySet Name="useres" EntityType="gestionabsenceModel.usere" />
+    <EntitySet Name="Decisions" EntityType="gestionabsenceModel.Decision" />
+    <EntitySet Name="detaille_abs" EntityType="gestionabsenceModel.detaille_abs" />
+    <EntitySet Name="absences" EntityType="gestionabsenceModel.absence" />
+    <AssociationSet Name="FK_absence_fonction" Association="gestionabsenceModel.FK_absence_fonction">
+      <End Role="fonction" EntitySet="fonctions" />
+      <End Role="absence" EntitySet="absences" />
+    </AssociationSet>
+    <AssociationSet Name="FK_decision_absence" Association="gestionabsenceModel.FK_decision_absence">
+      <End Role="absence" EntitySet="absences" />
+      <End Role="Decision" EntitySet="Decisions" />
+    </AssociationSet>
+    <AssociationSet Name="FK_detaille_abs_absence" Association="gestionabsenceModel.FK_detaille_abs_absence">
+      <End Role="absence" EntitySet="absences" />
+      <End Role="detaille_abs" EntitySet="detaille_abs" />
+    </AssociationSet>
+  </EntityContainer>
+  <EntityType Name="usere">
+    <Key>
+      <PropertyRef Name="password" />
+    </Key>
+    <Property Name="username" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="password" Type="Int32" Nullable="false" />
+    <Property Name="adminn" Type="Boolean" />
+  </EntityType>
+  <EntityType Name="Decision">
+    <Key>
+      <PropertyRef Name="numrestifsar" />
+    </Key>
+    <Property Name="numrestifsar" Type="Int32" Nullable="false" />
+    <Property Name="datestifdsar" Type="DateTime" Precision="0" />
+    <Property Name="service" Type="String" MaxLength="100" FixedLength="true" Unicode="true" />
+    <Property Name="jourdeduirr" Type="Int32" />
+    <Property Name="datededure" Type="DateTime" Precision="0" />
+    <Property Name="iddes" Type="Int32" />
+    <Property Name="typedecision" Type="String" MaxLength="100" FixedLength="true" Unicode="true" />
+    <Property Name="numdesisionktita3" Type="Int32" />
+    <NavigationProperty Name="absence" Relationship="gestionabsenceModel.FK_decision_absence" FromRole="Decision" ToRole="absence" />
+  </EntityType>
+  <EntityType Name="detaille_abs">
+    <Key>
+      <PropertyRef Name="iddetaile" />
+    </Key>
+    <Property Name="iddetaile" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="irsalistifsar" Type="String" MaxLength="100" FixedLength="true" Unicode="true" />
+    <Property Name="dateirsalistifsar" Type="DateTime" Precision="0" />
+    <Property Name="reponsestifsar" Type="String" MaxLength="100" FixedLength="true" Unicode="true" />
+    <Property Name="wosolistifsar" Type="String" MaxLength="100" FixedLength="true" Unicode="true" />
+    <Property Name="datereponsestifsar" Type="DateTime" Precision="0" />
+    <Property Name="typedereponse" Type="String" MaxLength="100" FixedLength="true" Unicode="true" />
+    <Property Name="idabs" Type="Int32" />
+    <NavigationProperty Name="absence" Relationship="gestionabsenceModel.FK_detaille_abs_absence" FromRole="detaille_abs" ToRole="absence" />
+  </EntityType>
+  <EntityType Name="absence">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="ppr" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="dateabsence" Type="DateTime" Precision="0" />
+    <NavigationProperty Name="fonction" Relationship="gestionabsenceModel.FK_absence_fonction" FromRole="absence" ToRole="fonction" />
+    <NavigationProperty Name="Decisions" Relationship="gestionabsenceModel.FK_decision_absence" FromRole="absence" ToRole="Decision" />
+    <NavigationProperty Name="detaille_abs" Relationship="gestionabsenceModel.FK_detaille_abs_absence" FromRole="absence" ToRole="detaille_abs" />
+  </EntityType>
+  <Association Name="FK_absence_fonction">
+    <End Type="gestionabsenceModel.fonction" Role="fonction" Multiplicity="0..1" />
+    <End Type="gestionabsenceModel.absence" Role="absence" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="fonction">
+        <PropertyRef Name="ppr" />
+      </Principal>
+      <Dependent Role="absence">
+        <PropertyRef Name="ppr" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_decision_absence">
+    <End Type="gestionabsenceModel.absence" Role="absence" Multiplicity="0..1" />
+    <End Type="gestionabsenceModel.Decision" Role="Decision" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="absence">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="Decision">
+        <PropertyRef Name="iddes" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_detaille_abs_absence">
+    <End Type="gestionabsenceModel.absence" Role="absence" Multiplicity="0..1" />
+    <End Type="gestionabsenceModel.detaille_abs" Role="detaille_abs" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="absence">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="detaille_abs">
+        <PropertyRef Name="idabs" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+</Schema>
